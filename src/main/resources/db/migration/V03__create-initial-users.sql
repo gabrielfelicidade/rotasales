@@ -1,0 +1,1 @@
+INSERT INTO "user" values (uuid_generate_v4(), 'feliz', 'senha123', 'Gabriel Giovani Felicidade')
