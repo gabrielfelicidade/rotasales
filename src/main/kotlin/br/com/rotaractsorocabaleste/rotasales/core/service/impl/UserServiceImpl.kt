@@ -10,4 +10,6 @@ class UserServiceImpl(
         private val userRepository: UserRepository
 ) : UserService {
     override fun save(user: User): User = userRepository.save(user)
+
+    override fun findByUsername(username: String): List<User> = userRepository.findByUsername(username)
 }
