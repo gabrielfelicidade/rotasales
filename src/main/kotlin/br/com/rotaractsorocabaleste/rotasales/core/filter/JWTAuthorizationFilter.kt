@@ -16,7 +16,7 @@ class JWTAuthorizationFilter(
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
         val authorizationHeader = request.getHeader("Authorization")
-        if(authorizationHeader?.startsWith("Bearer") == true) {
+        if (authorizationHeader?.startsWith("Bearer") == true) {
             val auth = getAuthentication(authorizationHeader)
             SecurityContextHolder.getContext().authentication = auth
         }
@@ -25,7 +25,7 @@ class JWTAuthorizationFilter(
 
     private fun getAuthentication(authorizationHeader: String?): UsernamePasswordAuthenticationToken {
         val token = authorizationHeader?.substring(7) ?: ""
-        if(JWTUtils.isTokenValid(token)) {
+        if (JWTUtils.isTokenValid(token)) {
             val username = JWTUtils.getUsername(token)
             return UsernamePasswordAuthenticationToken(username, null, mutableListOf())
         }

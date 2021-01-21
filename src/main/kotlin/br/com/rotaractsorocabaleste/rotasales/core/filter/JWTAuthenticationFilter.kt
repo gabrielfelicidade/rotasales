@@ -43,7 +43,9 @@ class JWTAuthenticationFilter(
     ) {
         val username = (authResult.principal as UserDetailsImpl).username
         val token = JWTUtils.generateToken(username)
-        response.addHeader("Authorization", "Bearer $token")
+        response.contentType = "application/json"
+        response.characterEncoding = "UTF-8"
+        response.writer.write("{\"token\": \"$token\"}")
     }
 
 }

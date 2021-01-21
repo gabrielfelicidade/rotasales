@@ -25,25 +25,9 @@ class SecurityConfig @Autowired constructor(
     private val userDetailsService: UserDetailsService
 ) : WebSecurityConfigurerAdapter() {
 
-    override fun configure(http: HttpSecurity) {
-        http.cors()
-        http.csrf().disable().authorizeRequests()
-            .antMatchers(HttpMethod.POST,"/users").permitAll()
-            .anyRequest().authenticated()
-        http.addFilter(JWTAuthenticationFilter(authenticationManager()))
-        http.addFilter(JWTAuthorizationFilter(authenticationManager()))
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    }
-
     @Bean
     fun bCryptPasswordEncoder(): BCryptPasswordEncoder {
         return BCryptPasswordEncoder()
-    }
-
-    override fun configure(auth: AuthenticationManagerBuilder) {
-        auth
-            .userDetailsService(userDetailsService)
-            .passwordEncoder(bCryptPasswordEncoder())
     }
 
     @Bean
@@ -54,5 +38,21 @@ class SecurityConfig @Autowired constructor(
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
         return source
+    }
+
+    override fun configure(http: HttpSecurity) {
+        http.cors()
+        http.csrf().disable().authorizeRequests()
+            .antMatchers(HttpMethod.POST,"/users").permitAll()
+            .anyRequest().authenticated()
+        http.addFilter(JWTAuthenticationFilter(authenticationManager()))
+        http.addFilter(JWTAuthorizationFilter(authenticationManager()))
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    }
+
+    override fun configure(auth: AuthenticationManagerBuilder) {
+        auth
+            .userDetailsService(userDetailsService)
+            .passwordEncoder(bCryptPasswordEncoder())
     }
 }

@@ -6,6 +6,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/users")
 class UserController(
         private val userService: UserService,
+        private val passwordEncoder: PasswordEncoder,
         private val logger: Logger = LoggerFactory.getLogger(UserController::class.java)
 ) {
 
@@ -23,7 +25,13 @@ class UserController(
         logger.info("Received request for create a user, request=$user")
 
         return try {
-            val ret = userService.save(user)
+            val ret = userService.save(
+                User(
+                    username = user.username,
+                    password = passwordEncoder.encode(user.password),
+                    fullName = user.fullName
+                )
+            )
 
             logger.info("New user saved, user=$ret")
 
