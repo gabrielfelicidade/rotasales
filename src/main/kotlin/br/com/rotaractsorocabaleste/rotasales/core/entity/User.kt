@@ -18,15 +18,20 @@ data class User(
     val password: String? = null,
     @Column(nullable = false)
     val fullName: String? = null,
-    @OneToMany
-    val roles: List<UserRole> = listOf()
+    @ManyToMany
+    @JoinTable(
+        name = "user_role",
+        joinColumns = [JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "role_id")]
+    )
+    val roles: List<Role> = listOf()
 )
 
 class UserDetailsImpl(
     private val user: User
 ) : UserDetails {
     override fun getAuthorities(): List<SimpleGrantedAuthority> {
-        return user.roles.map { SimpleGrantedAuthority(it.role?.description) }
+        return user.roles.map { SimpleGrantedAuthority(it.description) }
     }
 
     override fun isEnabled(): Boolean {

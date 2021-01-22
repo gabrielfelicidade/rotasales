@@ -5,17 +5,20 @@ import br.com.rotaractsorocabaleste.rotasales.core.service.UserService
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional
 class UserDetailsServiceImpl(
     private val userService: UserService
 ) : UserDetailsService {
 
-    override fun loadUserByUsername(username: String?): UserDetails =
-        UserDetailsImpl(
+    override fun loadUserByUsername(username: String?): UserDetails {
+        return UserDetailsImpl(
             userService
                 .findByUsername(username.toString())
                 .first()
         )
+    }
 
 }
