@@ -1,3 +1,3 @@
-INSERT INTO "role" VALUES (uuid_generate_v4(), 'ROLE_MASTER');
-INSERT INTO "role" VALUES (uuid_generate_v4(), 'ROLE_ADMIN');
-INSERT INTO "role" VALUES (uuid_generate_v4(), 'ROLE_USER');
+INSERT INTO "role" VALUES ('c867bda7-3a72-40d6-b149-81899d950c37', 'ROLE_MASTER');
+INSERT INTO "role" VALUES ('a92423df-e585-4f12-b325-9047212dbb46', 'ROLE_ADMIN');
+INSERT INTO "role" VALUES ('106542f4-8a92-490b-a1b6-33a4262dff0a', 'ROLE_USER');
