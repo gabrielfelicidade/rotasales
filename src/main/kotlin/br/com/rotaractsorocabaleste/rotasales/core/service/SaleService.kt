@@ -6,10 +6,7 @@ import java.util.*
 
 interface SaleService {
     fun create(saleRequestVO: SaleRequestVO): Sale
-
     fun update(saleRequestVO: SaleRequestVO): Sale?
-
     fun delete(saleId: UUID): Boolean
-
     fun getSalesBySellerId(sellerId: UUID): List<SaleRequestVO>
 }

@@ -25,7 +25,7 @@ class EventController(
             logger.info("Getting all active events, number of events=${ret.size}")
 
             ResponseEntity.ok(ret)
-        } catch(e: Exception){
+        } catch (e: Exception) {
             logger.error("Error while getting active events")
 
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)

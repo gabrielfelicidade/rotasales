@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/users")
 class UserController(
-        private val userService: UserService,
-        private val passwordEncoder: PasswordEncoder,
-        private val logger: Logger = LoggerFactory.getLogger(UserController::class.java)
+    private val userService: UserService,
+    private val passwordEncoder: PasswordEncoder,
+    private val logger: Logger = LoggerFactory.getLogger(UserController::class.java)
 ) {
 
     @PostMapping
@@ -29,14 +29,15 @@ class UserController(
                 User(
                     username = user.username,
                     password = passwordEncoder.encode(user.password),
-                    fullName = user.fullName
+                    fullName = user.fullName,
+                    roles = user.roles
                 )
             )
 
             logger.info("New user saved, user=$ret")
 
             ResponseEntity.ok(ret)
-        }catch(e: Exception) {
+        } catch (e: Exception) {
             logger.error("Error while inserting user, user=$user")
 
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)

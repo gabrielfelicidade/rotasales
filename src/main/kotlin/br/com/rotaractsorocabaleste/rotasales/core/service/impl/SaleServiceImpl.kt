@@ -25,7 +25,7 @@ class SaleServiceImpl(
     }
 
     override fun update(saleRequestVO: SaleRequestVO): Sale? =
-        if(checkSaleAlreadyExists(saleRequestVO.id)) {
+        if (checkSaleAlreadyExists(saleRequestVO.id)) {
             val oldSaleItems = saleItemService.getSaleItemsBySaleId(saleRequestVO.id)
             val newSaleItems = getSaleItemsForSaleRequestVO(saleRequestVO)
 
@@ -42,7 +42,7 @@ class SaleServiceImpl(
 
         saleRepository.save(sale)
 
-        return true;
+        return true
     }
 
     override fun getSalesBySellerId(sellerId: UUID): List<SaleRequestVO> =

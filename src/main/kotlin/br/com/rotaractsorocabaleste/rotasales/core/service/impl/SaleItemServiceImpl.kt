@@ -8,7 +8,7 @@ import java.util.*
 
 @Service
 class SaleItemServiceImpl(
-        private val saleItemRepository: SaleItemRepository
+    private val saleItemRepository: SaleItemRepository
 ) : SaleItemService {
     override fun saveSaleItems(saleItems: List<SaleItem>): List<SaleItem> =
         saleItemRepository
@@ -19,6 +19,6 @@ class SaleItemServiceImpl(
         saleItemRepository.findBySaleId(saleId)
 
     override fun removeSaleItems(saleItems: List<SaleItem>) =
-            saleItemRepository.deleteAll(saleItems)
+        saleItemRepository.deleteAll(saleItems)
 
 }

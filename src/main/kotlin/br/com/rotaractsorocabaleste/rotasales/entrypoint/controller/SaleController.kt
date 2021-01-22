@@ -13,8 +13,8 @@ import java.util.*
 @RestController
 @RequestMapping("/sales")
 class SaleController(
-        private val saleService: SaleService,
-        private val logger: Logger = LoggerFactory.getLogger(SaleController::class.java)
+    private val saleService: SaleService,
+    private val logger: Logger = LoggerFactory.getLogger(SaleController::class.java)
 ) {
 
     @GetMapping("/{sellerId}")
@@ -25,7 +25,7 @@ class SaleController(
             logger.info("Getting all sales for sellerId=$sellerId, number of sales=${ret.size}")
 
             ResponseEntity.ok(ret)
-        } catch(e: Exception){
+        } catch (e: Exception) {
             logger.error("Error while getting sales from sellerId=$sellerId")
 
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
@@ -42,7 +42,7 @@ class SaleController(
             logger.info("New sale saved, sale={}", ret)
 
             ResponseEntity.ok(ret)
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             logger.error("Error while inserting sale, sale=$saleRequestVO")
 
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
@@ -59,7 +59,7 @@ class SaleController(
             logger.info("Sale updated, sale=$ret")
 
             ret?.let { ResponseEntity.ok(it) } as ResponseEntity<Sale>
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             logger.error("Error while updating sale, sale=$saleRequestVO")
 
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
@@ -75,8 +75,8 @@ class SaleController(
 
             logger.info("Sale deleted, id=$saleId")
 
-            ret?.let { ResponseEntity.ok(it) } as ResponseEntity<Sale>
-        } catch(e: Exception) {
+            ret.let { ResponseEntity.ok(it) } as ResponseEntity<Sale>
+        } catch (e: Exception) {
             logger.error("Error while deleting sale, id=$saleId")
 
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)

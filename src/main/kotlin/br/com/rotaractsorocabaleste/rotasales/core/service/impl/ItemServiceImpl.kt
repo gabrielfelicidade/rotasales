@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class ItemServiceImpl(
-        private val itemRepository: ItemRepository
+    private val itemRepository: ItemRepository
 ) : ItemService {
     override fun save(item: Item): Item = itemRepository.save(item)
 

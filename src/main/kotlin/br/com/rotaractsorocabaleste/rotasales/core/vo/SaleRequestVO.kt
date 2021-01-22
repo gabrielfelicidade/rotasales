@@ -7,16 +7,16 @@ import br.com.rotaractsorocabaleste.rotasales.core.entity.User
 import java.util.*
 
 data class SaleRequestVO(
-        val id: UUID = UUID.randomUUID(),
-        val seller: User? = null,
-        val customer: String? = null,
-        val event: Event? = null,
-        val items: List<SaleItem> = listOf()
+    val id: UUID = UUID.randomUUID(),
+    val seller: User? = null,
+    val customer: String? = null,
+    val event: Event? = null,
+    val items: List<SaleItem> = listOf()
 )
 
 fun SaleRequestVO.toSale() = Sale(
-        customer = customer,
-        event = event,
-        id = id,
-        seller = seller
+    customer = customer,
+    event = event,
+    id = id,
+    seller = seller
 )
