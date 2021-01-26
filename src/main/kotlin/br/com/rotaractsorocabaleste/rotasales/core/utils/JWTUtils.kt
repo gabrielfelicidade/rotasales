@@ -13,12 +13,13 @@ class JWTUtils {
 
     companion object {
         private const val expiration: Long = 3600000
+        private val secret = Keys.secretKeyFor(SignatureAlgorithm.HS512)
 
         fun generateToken(username: String): String = Jwts
             .builder()
             .setSubject(username)
             .setExpiration(Date(System.currentTimeMillis() + expiration))
-            .signWith(Keys.secretKeyFor(SignatureAlgorithm.HS512))
+            .signWith(secret)
             .compact()
 
         fun isTokenValid(token: String): Boolean {
@@ -35,9 +36,9 @@ class JWTUtils {
 
         private fun getClaimsToken(token: String): Claims = Jwts
             .parserBuilder()
-            .setSigningKey(Keys.secretKeyFor(SignatureAlgorithm.ES512))
+            .setSigningKey(secret)
             .build()
-            .parseClaimsJwt(token)
+            .parseClaimsJws(token)
             .body
     }
 }

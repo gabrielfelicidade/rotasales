@@ -5,13 +5,14 @@ import java.util.*
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
+import javax.persistence.Table
 
 @Entity
+@Table(name = "item")
 data class Item(
     @Id
+    @Column(name = "item_id")
     val id: UUID = UUID.randomUUID(),
-    @Column(nullable = false)
     val description: String? = null,
-    @Column(nullable = false)
     val value: BigDecimal = BigDecimal.ZERO
 )

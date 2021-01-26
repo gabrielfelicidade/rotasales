@@ -10,13 +10,12 @@ import javax.persistence.*
 @Table(name = "\"user\"")
 data class User(
     @Id
+    @Column(name = "user_id")
     val id: UUID = UUID.randomUUID(),
-    @Column(unique = true, nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     val username: String? = null,
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Column(nullable = false)
     val password: String? = null,
-    @Column(nullable = false)
     val fullName: String? = null,
     @ManyToMany
     @JoinTable(
@@ -30,6 +29,11 @@ data class User(
 class UserDetailsImpl(
     private val user: User
 ) : UserDetails {
+
+    init {
+        user.roles.size
+    }
+
     override fun getAuthorities(): List<SimpleGrantedAuthority> {
         return user.roles.map { SimpleGrantedAuthority(it.description) }
     }

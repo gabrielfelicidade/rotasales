@@ -45,18 +45,8 @@ class SaleServiceImpl(
         return true
     }
 
-    override fun getSalesBySellerId(sellerId: UUID): List<SaleRequestVO> =
+    override fun getSalesBySellerId(sellerId: UUID): List<Sale> =
         saleRepository.findBySellerIdAndActiveTrue(sellerId = sellerId)
-            .parallelStream()
-            .map {
-                SaleRequestVO(
-                    customer = it.customer,
-                    event = it.event,
-                    id = it.id,
-                    items = saleItemService.getSaleItemsBySaleId(it.id),
-                    seller = it.seller
-                )
-            }.collect(Collectors.toList())
 
     private fun getSaleItemsForSaleRequestVO(sale: SaleRequestVO): List<SaleItem> =
         sale.items

@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-@Transactional
 class UserDetailsServiceImpl(
     private val userService: UserService
 ) : UserDetailsService {
 
+    @Transactional
     override fun loadUserByUsername(username: String?): UserDetails {
         return UserDetailsImpl(
             userService

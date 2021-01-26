@@ -1,20 +1,28 @@
 package br.com.rotaractsorocabaleste.rotasales.core.entity
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import org.hibernate.mapping.Join
 import java.util.*
 import javax.persistence.*
 
 @Entity
+@Table(name = "sale")
 data class Sale(
     @Id
+    @Column(name = "sale_id")
     val id: UUID = UUID.randomUUID(),
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @OneToOne
+    @JoinColumn(name = "seller_id")
+    @JsonIgnoreProperties(value = [ "fullName", "roles" ])
     val seller: User? = null,
-    @Column(nullable = false)
     val customer: String? = null,
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "event_id")
+    @JsonIgnoreProperties(value = [ "description", "startDate", "endDate" ])
     val event: Event? = null,
-    @Column(nullable = false)
-    val active: Boolean = true
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    val active: Boolean = true,
+    @OneToMany(mappedBy = "sale")
+    val items: List<SaleItem> = listOf()
 )

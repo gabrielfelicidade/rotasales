@@ -18,7 +18,7 @@ class SaleController(
 ) {
 
     @GetMapping("/{sellerId}")
-    fun getSalesBySellerId(@PathVariable sellerId: UUID): ResponseEntity<List<SaleRequestVO>> {
+    fun getSalesBySellerId(@PathVariable sellerId: UUID): ResponseEntity<List<Sale>> {
         return try {
             val ret = saleService.getSalesBySellerId(sellerId)
 
