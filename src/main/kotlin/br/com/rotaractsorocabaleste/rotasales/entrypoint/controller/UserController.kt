@@ -26,11 +26,8 @@ class UserController(
 
         return try {
             val ret = userService.save(
-                User(
-                    username = user.username,
-                    password = passwordEncoder.encode(user.password),
-                    fullName = user.fullName,
-                    roles = user.roles
+                user.copy(
+                    password = passwordEncoder.encode(user.password)
                 )
             )
 
