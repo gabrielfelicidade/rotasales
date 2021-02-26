@@ -32,7 +32,9 @@ class SecurityConfig @Autowired constructor(
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource? {
         val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", CorsConfiguration().applyPermitDefaultValues())
+        val configuration = CorsConfiguration().applyPermitDefaultValues()
+        configuration.allowedMethods = listOf("*")
+        source.registerCorsConfiguration("/**", configuration)
         return source
     }
 
