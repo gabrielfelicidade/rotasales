@@ -32,16 +32,16 @@ class ItemController(
 
     @PostMapping
     fun create(@RequestBody item: Item): ResponseEntity<Item> {
-        logger.info("Received request for create an item, request=$item")
+        logger.info("Received request for create an item, item description=${item.description}")
 
         return try {
             val ret = itemService.save(item)
 
-            logger.info("New item saved, item=$ret")
+            logger.info("New item saved, item description=${ret.description}")
 
             ResponseEntity.ok(ret)
         } catch (e: Exception) {
-            logger.error("Error while saving item, item=$item")
+            logger.error("Error while saving item, item description=${item.description}")
 
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
         }

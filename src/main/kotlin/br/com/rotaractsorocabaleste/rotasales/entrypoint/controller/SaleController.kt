@@ -34,16 +34,16 @@ class SaleController(
 
     @PostMapping
     fun create(@RequestBody sale: Sale): ResponseEntity<Sale> {
-        logger.info("Received request for create a sale, request=$sale")
+        logger.info("Received request for create a sale, sale for=${sale.customer}")
 
         return try {
             val ret = saleService.create(sale)
 
-            logger.info("New sale saved, sale={}", ret)
+            logger.info("New sale saved, sale for=${ret.customer}")
 
             ResponseEntity.ok(ret)
         } catch (e: Exception) {
-            logger.error("Error while inserting sale, sale=$sale")
+            logger.error("Error while inserting sale, sale for=${sale.customer}")
 
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
         }
@@ -51,16 +51,16 @@ class SaleController(
 
     @PutMapping
     fun update(@RequestBody sale: Sale): ResponseEntity<Sale> {
-        logger.info("Received request for update a sale, request=$sale")
+        logger.info("Received request for update a sale, sale for=${sale.customer}")
 
         return try {
             val ret = saleService.update(sale)
 
-            logger.info("Sale updated, saleId=${ret?.id}")
+            logger.info("Sale updated, sale for=${ret?.customer}")
 
             ret?.let { ResponseEntity.ok(it) } as ResponseEntity<Sale>
         } catch (e: Exception) {
-            logger.error("Error while updating sale, sale=$sale")
+            logger.error("Error while updating sale, sale for=${sale.customer}")
 
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
         }
@@ -68,16 +68,16 @@ class SaleController(
 
     @DeleteMapping("/{saleId}")
     fun delete(@PathVariable saleId: UUID): ResponseEntity<Sale> {
-        logger.info("Received request for delete a sale, id=$saleId")
+        logger.info("Received request for delete a sale, id=${saleId}")
 
         return try {
             val ret = saleService.delete(saleId)
 
-            logger.info("Sale deleted, id=$saleId")
+            logger.info("Sale deleted, id=${saleId}")
 
             ret.let { ResponseEntity.ok(it) } as ResponseEntity<Sale>
         } catch (e: Exception) {
-            logger.error("Error while deleting sale, id=$saleId")
+            logger.error("Error while deleting sale, id=${saleId}")
 
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
         }

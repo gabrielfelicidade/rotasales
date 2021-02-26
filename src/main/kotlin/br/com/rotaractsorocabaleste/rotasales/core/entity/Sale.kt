@@ -19,7 +19,7 @@ data class Sale(
     val customer: String? = null,
     @ManyToOne
     @JoinColumn(name = "event_id")
-    @JsonIgnoreProperties(value = [ "description", "startDate", "endDate" ])
+    @JsonIgnoreProperties(value = [ "startDate", "endDate" ])
     val event: Event? = null,
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     val active: Boolean = true,

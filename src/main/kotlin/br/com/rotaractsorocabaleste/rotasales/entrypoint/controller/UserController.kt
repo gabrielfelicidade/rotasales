@@ -22,7 +22,7 @@ class UserController(
 
     @PostMapping
     fun createUser(@RequestBody user: User): ResponseEntity<User> {
-        logger.info("Received request for create a user, request=$user")
+        logger.info("Received request for create a user, username=${user.username}")
 
         return try {
             val ret = userService.save(
@@ -31,11 +31,11 @@ class UserController(
                 )
             )
 
-            logger.info("New user saved, user=$ret")
+            logger.info("New user saved, username=${ret.username}")
 
             ResponseEntity.ok(ret)
         } catch (e: Exception) {
-            logger.error("Error while inserting user, user=$user")
+            logger.error("Error while inserting user, username=${user.username}")
 
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
         }

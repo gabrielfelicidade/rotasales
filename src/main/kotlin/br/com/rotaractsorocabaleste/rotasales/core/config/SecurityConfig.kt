@@ -31,17 +31,14 @@ class SecurityConfig @Autowired constructor(
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource? {
-        val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("*")
-        configuration.allowedMethods = listOf("*")
         val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", configuration)
+        source.registerCorsConfiguration("/**", CorsConfiguration().applyPermitDefaultValues())
         return source
     }
 
     override fun configure(http: HttpSecurity) {
-        http.cors()
-        http.csrf().disable().authorizeRequests()
+        http.cors().and()
+            .csrf().disable().authorizeRequests()
             .antMatchers(HttpMethod.POST, "/users").permitAll()
             .anyRequest().authenticated()
         http.addFilter(JWTAuthenticationFilter(authenticationManager()))
