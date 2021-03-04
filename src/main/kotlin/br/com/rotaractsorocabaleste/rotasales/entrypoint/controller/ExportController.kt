@@ -10,6 +10,7 @@ import com.itextpdf.layout.element.Image
 import com.itextpdf.layout.element.Paragraph
 import com.itextpdf.layout.property.HorizontalAlignment
 import com.itextpdf.layout.property.TextAlignment
+import org.springframework.core.io.ResourceLoader
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.util.ResourceUtils
@@ -23,7 +24,8 @@ import java.util.*
 @RestController
 @RequestMapping("/exports")
 class ExportController(
-    private val saleService: SaleService
+    private val saleService: SaleService,
+    private val resourceLoader: ResourceLoader
 ) {
 
     @GetMapping("/receipt/{saleId}")
@@ -36,7 +38,7 @@ class ExportController(
         val writer = PdfWriter(byteArrayStream)
         val pdf = PdfDocument(writer)
         val document = Document(pdf)
-        val logoImage = Image(ImageDataFactory.create(ResourceUtils.getFile("classpath:logo.png").absolutePath))
+        val logoImage = Image(ImageDataFactory.create(resourceLoader.getResource("classpath:logo.png").file.absolutePath))
         logoImage.scaleToFit(342.0F, 121.0F)
         logoImage.setMarginBottom(30.0F)
         logoImage.setHorizontalAlignment(HorizontalAlignment.CENTER)
