@@ -8,4 +8,5 @@ interface SaleService {
     fun update(sale: Sale): Sale?
     fun delete(saleId: UUID): Boolean
     fun getLoggedInUserSales(): List<Sale>
+    fun findById(saleId: UUID): Optional<Sale>
 }
