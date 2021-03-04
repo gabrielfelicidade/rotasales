@@ -10,9 +10,11 @@ import com.itextpdf.layout.element.Image
 import com.itextpdf.layout.element.Paragraph
 import com.itextpdf.layout.property.HorizontalAlignment
 import com.itextpdf.layout.property.TextAlignment
+import org.springframework.core.io.ClassPathResource
 import org.springframework.core.io.ResourceLoader
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
+import org.springframework.util.FileCopyUtils
 import org.springframework.util.ResourceUtils
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -38,7 +40,7 @@ class ExportController(
         val writer = PdfWriter(byteArrayStream)
         val pdf = PdfDocument(writer)
         val document = Document(pdf)
-        val logoImage = Image(ImageDataFactory.create(resourceLoader.getResource("classpath:logo.png").file.absolutePath))
+        val logoImage = Image(ImageDataFactory.create(FileCopyUtils.copyToByteArray(ClassPathResource("logo.png").inputStream)))
         logoImage.scaleToFit(342.0F, 121.0F)
         logoImage.setMarginBottom(30.0F)
         logoImage.setHorizontalAlignment(HorizontalAlignment.CENTER)
