@@ -72,6 +72,7 @@ class SaleServiceImpl(
                 )
         )
     }
+    override fun findById(saleId: UUID): Optional<Sale> = saleRepository.findById(saleId)
 
     private fun getSaleItemsForSale(sale: Sale): List<SaleItem> =
         sale.items

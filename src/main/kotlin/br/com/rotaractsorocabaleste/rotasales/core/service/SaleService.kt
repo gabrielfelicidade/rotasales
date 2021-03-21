@@ -10,4 +10,5 @@ interface SaleService {
     fun delete(saleId: UUID)
     fun getLoggedInUserSales(): List<Sale>
     fun patchSaleStatus(patchSaleStatusRequestVO: PatchSaleStatusRequestVO)
+    fun findById(saleId: UUID): Optional<Sale>
 }
