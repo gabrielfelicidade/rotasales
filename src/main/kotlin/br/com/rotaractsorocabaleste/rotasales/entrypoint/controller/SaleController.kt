@@ -2,11 +2,12 @@ package br.com.rotaractsorocabaleste.rotasales.entrypoint.controller
 
 import br.com.rotaractsorocabaleste.rotasales.core.entity.Sale
 import br.com.rotaractsorocabaleste.rotasales.core.service.SaleService
+import br.com.rotaractsorocabaleste.rotasales.core.vo.PatchSaleStatusRequestVO
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.net.URI
 import java.security.Principal
 import java.util.*
 
@@ -19,68 +20,51 @@ class SaleController(
 
     @GetMapping
     fun getLoggedInUserSales(principal: Principal): ResponseEntity<List<Sale>> {
-        return try {
-            val ret = saleService.getLoggedInUserSales()
+        val ret = saleService.getLoggedInUserSales()
 
-            logger.info("Getting all sales for seller=${principal.name}")
+        logger.info("Getting all sales for seller=${principal.name}")
 
-            ResponseEntity.ok(ret)
-        } catch (e: Exception) {
-            logger.error("Error while getting sales from seller=${principal.name}")
-
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
-        }
+        return ResponseEntity.ok(ret)
     }
 
     @PostMapping
-    fun create(@RequestBody sale: Sale): ResponseEntity<Sale> {
+    fun create(@RequestBody sale: Sale): ResponseEntity<Any> {
         logger.info("Received request for create a sale, sale for=${sale.customer}")
 
-        return try {
-            val ret = saleService.create(sale)
+        saleService.create(sale)
 
-            logger.info("New sale saved, sale for=${ret.customer}")
+        logger.info("New sale saved, sale for=${sale.customer}")
 
-            ResponseEntity.ok(ret)
-        } catch (e: Exception) {
-            logger.error("Error while inserting sale, sale for=${sale.customer}")
-
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
-        }
+        return ResponseEntity.created(URI.create("/sales")).build()
     }
 
     @PutMapping
-    fun update(@RequestBody sale: Sale): ResponseEntity<Sale> {
+    fun update(@RequestBody sale: Sale): ResponseEntity<Any> {
         logger.info("Received request for update a sale, sale for=${sale.customer}")
 
-        return try {
-            val ret = saleService.update(sale)
+        saleService.update(sale)
 
-            logger.info("Sale updated, sale for=${ret?.customer}")
+        logger.info("Sale updated, sale for=${sale.customer}")
 
-            ret?.let { ResponseEntity.ok(it) } as ResponseEntity<Sale>
-        } catch (e: Exception) {
-            logger.error("Error while updating sale, sale for=${sale.customer}")
-
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
-        }
+        return ResponseEntity.ok().build()
     }
 
     @DeleteMapping("/{saleId}")
-    fun delete(@PathVariable saleId: UUID): ResponseEntity<Sale> {
-        logger.info("Received request for delete a sale, id=${saleId}")
+    fun delete(@PathVariable saleId: UUID): ResponseEntity<Any> {
+        saleService.delete(saleId)
 
-        return try {
-            val ret = saleService.delete(saleId)
+        logger.info("Sale deleted, saleId=${saleId}")
 
-            logger.info("Sale deleted, id=${saleId}")
+        return ResponseEntity.ok().build()
+    }
 
-            ret.let { ResponseEntity.ok(it) } as ResponseEntity<Sale>
-        } catch (e: Exception) {
-            logger.error("Error while deleting sale, id=${saleId}")
+    @PatchMapping
+    fun patchSaleStatus(@RequestBody patchSaleStatusRequestVO: PatchSaleStatusRequestVO): ResponseEntity<Any> {
+        logger.info("Received request for change saleId=${patchSaleStatusRequestVO.saleId}} to status=${patchSaleStatusRequestVO.status}")
 
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
-        }
+        saleService.patchSaleStatus(patchSaleStatusRequestVO)
+
+        return ResponseEntity.ok().build()
     }
 
 }

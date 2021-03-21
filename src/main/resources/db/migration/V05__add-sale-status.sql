@@ -1,0 +1,2 @@
+ALTER TABLE "sale"
+ADD COLUMN status SMALLINT

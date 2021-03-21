@@ -1,6 +1,7 @@
 package br.com.rotaractsorocabaleste.rotasales.core.filter
 
 import br.com.rotaractsorocabaleste.rotasales.core.utils.JWTUtils
+import io.jsonwebtoken.security.SignatureException
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -17,8 +18,14 @@ class JWTAuthorizationFilter(
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
         val authorizationHeader = request.getHeader("Authorization")
         if (authorizationHeader?.startsWith("Bearer") == true) {
-            val auth = getAuthentication(authorizationHeader)
-            SecurityContextHolder.getContext().authentication = auth
+            try {
+                val auth = getAuthentication(authorizationHeader)
+                SecurityContextHolder.getContext().authentication = auth
+            } catch (e: SignatureException) {
+                response.contentType = "application/json"
+                response.characterEncoding = "UTF-8"
+                response.writer.write("{\"error\": \"Invalid token. Please refresh token.\"}")
+            }
         }
         chain.doFilter(request, response)
     }

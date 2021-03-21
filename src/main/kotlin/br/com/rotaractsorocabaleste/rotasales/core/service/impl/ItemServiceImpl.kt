@@ -4,6 +4,7 @@ import br.com.rotaractsorocabaleste.rotasales.core.entity.Item
 import br.com.rotaractsorocabaleste.rotasales.core.service.ItemService
 import br.com.rotaractsorocabaleste.rotasales.dataprovider.repository.ItemRepository
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class ItemServiceImpl(
@@ -11,5 +12,5 @@ class ItemServiceImpl(
 ) : ItemService {
     override fun save(item: Item): Item = itemRepository.save(item)
 
-    override fun getAll(): List<Item> = itemRepository.findAll() as List<Item>
+    override fun findByEventId(eventId: UUID): List<Item> = itemRepository.findByEventId(eventId)
 }

@@ -23,6 +23,14 @@ data class Sale(
     val event: Event? = null,
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     val active: Boolean = true,
+    val status: SaleStatus = SaleStatus.AWAITING_SEPARATION,
     @OneToMany(mappedBy = "sale")
     val items: List<SaleItem> = listOf()
 )
+
+enum class SaleStatus {
+    AWAITING_SEPARATION,
+    IN_SEPARATION,
+    SEPARATION_COMPLETED,
+    DELIVERED
+}

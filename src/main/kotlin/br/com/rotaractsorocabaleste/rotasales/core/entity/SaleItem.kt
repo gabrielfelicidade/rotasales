@@ -18,6 +18,5 @@ data class SaleItem(
     @ManyToOne
     @JoinColumn(name = "item_id")
     val item: Item? = null,
-    val amount: BigDecimal = BigDecimal.ZERO,
-    val unitaryValue: BigDecimal = BigDecimal.ZERO
+    val amount: BigDecimal = BigDecimal.ZERO
 )

@@ -2,9 +2,12 @@ package br.com.rotaractsorocabaleste.rotasales.core.service.impl
 
 import br.com.rotaractsorocabaleste.rotasales.core.entity.Sale
 import br.com.rotaractsorocabaleste.rotasales.core.entity.SaleItem
+import br.com.rotaractsorocabaleste.rotasales.core.exception.EntityNotFoundException
+import br.com.rotaractsorocabaleste.rotasales.core.exception.UserUnauthorizedException
 import br.com.rotaractsorocabaleste.rotasales.core.service.SaleItemService
 import br.com.rotaractsorocabaleste.rotasales.core.service.SaleService
 import br.com.rotaractsorocabaleste.rotasales.core.service.UserService
+import br.com.rotaractsorocabaleste.rotasales.core.vo.PatchSaleStatusRequestVO
 import br.com.rotaractsorocabaleste.rotasales.dataprovider.repository.SaleRepository
 import org.springframework.stereotype.Service
 import java.util.*
@@ -16,14 +19,15 @@ class SaleServiceImpl(
     private val saleItemService: SaleItemService,
     private val userService: UserService
 ) : SaleService {
-    override fun create(sale: Sale): Sale {
-        val savedSale = saleRepository.save(
+    override fun create(sale: Sale) {
+        saleRepository.save(
             sale.copy(
                 seller = userService.getLoggedInUser(),
                 items = listOf()
             )
         )
-        val savedSaleItems = saleItemService.saveSaleItems(
+
+        saleItemService.saveSaleItems(
             sale.items.map {
                 it.copy(
                     sale = Sale(
@@ -32,44 +36,42 @@ class SaleServiceImpl(
                 )
             }
         )
-
-        return savedSale.copy(items = savedSaleItems)
     }
 
-    override fun update(sale: Sale): Sale? =
-        if (checkSaleAlreadyExists(sale.id)) {
-            val oldSaleItems = saleItemService.getSaleItemsBySaleId(sale.id)
-            val newSaleItems = getSaleItemsForSale(sale)
+    override fun update(sale: Sale) {
+        getExistingSale(sale.id)
 
-            saleItemService.removeSaleItems(getPendingRemoveSaleItems(oldSaleItems, newSaleItems))
+        val oldSaleItems = saleItemService.getSaleItemsBySaleId(sale.id)
+        val newSaleItems = getSaleItemsForSale(sale)
 
-            val savedItems = saleItemService.saveSaleItems(newSaleItems)
+        saleItemService.removeSaleItems(getPendingRemoveSaleItems(oldSaleItems, newSaleItems))
 
+        saleItemService.saveSaleItems(newSaleItems)
+    }
+
+    override fun delete(saleId: UUID) {
+        val sale = getExistingSale(saleId)
+
+        checkSaleBelongsToLoggedInUser(sale)
+
+        saleRepository.save(
             sale.copy(
-                items = savedItems
+                active = false
             )
-        } else {
-            throw Exception("Bad Request")
-        }
-
-    override fun delete(saleId: UUID): Boolean {
-        val sale = saleRepository.findById(saleId).get()
-
-        if (checkSaleBelongsToLoggedInUser(sale)) {
-            saleRepository.save(
-                sale.copy(
-                    active = false
-                )
-            )
-
-            return true
-        }
-
-        return false
+        )
     }
 
     override fun getLoggedInUserSales(): List<Sale> =
         saleRepository.findBySellerIdAndActiveTrue(sellerId = userService.getLoggedInUser().id)
+
+    override fun patchSaleStatus(patchSaleStatusRequestVO: PatchSaleStatusRequestVO) {
+        saleRepository.save(
+            getExistingSale(patchSaleStatusRequestVO.saleId)
+                .copy(
+                    status = patchSaleStatusRequestVO.status
+                )
+        )
+    }
 
     private fun getSaleItemsForSale(sale: Sale): List<SaleItem> =
         sale.items
@@ -79,8 +81,7 @@ class SaleServiceImpl(
                     id = it.id,
                     sale = Sale(sale.id),
                     item = it.item,
-                    amount = it.amount,
-                    unitaryValue = it.unitaryValue
+                    amount = it.amount
                 )
             }.collect(Collectors.toList())
 
@@ -93,8 +94,15 @@ class SaleServiceImpl(
             .collect(Collectors.toList())
     }
 
-    private fun checkSaleAlreadyExists(saleId: UUID): Boolean = saleRepository.existsById(saleId)
+    private fun getExistingSale(saleId: UUID): Sale = saleRepository.findById(saleId).let {
+        if (it.isEmpty)
+            throw EntityNotFoundException(saleId.toString())
+        else
+            it.get()
+    }
 
-    private fun checkSaleBelongsToLoggedInUser(sale: Sale): Boolean =
-        sale.seller!!.id.toString() == userService.getLoggedInUser().id.toString()
+    private fun checkSaleBelongsToLoggedInUser(sale: Sale) {
+        if (sale.seller!!.id.toString() != userService.getLoggedInUser().id.toString())
+            throw UserUnauthorizedException(userService.getLoggedInUser().id)
+    }
 }

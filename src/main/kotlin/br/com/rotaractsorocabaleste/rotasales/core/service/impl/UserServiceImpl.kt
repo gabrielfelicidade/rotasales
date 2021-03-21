@@ -1,6 +1,7 @@
 package br.com.rotaractsorocabaleste.rotasales.core.service.impl
 
 import br.com.rotaractsorocabaleste.rotasales.core.entity.User
+import br.com.rotaractsorocabaleste.rotasales.core.exception.UserUnauthorizedException
 import br.com.rotaractsorocabaleste.rotasales.core.service.UserService
 import br.com.rotaractsorocabaleste.rotasales.dataprovider.repository.UserRepository
 import org.springframework.security.core.context.SecurityContextHolder
@@ -19,5 +20,5 @@ class UserServiceImpl(
     override fun getLoggedInUser(): User =
         findByUsername(
             SecurityContextHolder.getContext().authentication.name
-        ).firstOrNull() ?: throw Exception("Cannot find logged in user")
+        ).firstOrNull() ?: throw UserUnauthorizedException(null)
 }
