@@ -2,6 +2,8 @@ package br.com.rotaractsorocabaleste.rotasales.core.service.impl
 
 import br.com.rotaractsorocabaleste.rotasales.core.entity.Sale
 import br.com.rotaractsorocabaleste.rotasales.core.entity.SaleItem
+import br.com.rotaractsorocabaleste.rotasales.core.entity.SaleStatus
+import br.com.rotaractsorocabaleste.rotasales.core.exception.BadRequestException
 import br.com.rotaractsorocabaleste.rotasales.core.exception.EntityNotFoundException
 import br.com.rotaractsorocabaleste.rotasales.core.exception.UserUnauthorizedException
 import br.com.rotaractsorocabaleste.rotasales.core.service.SaleItemService
@@ -65,13 +67,17 @@ class SaleServiceImpl(
         saleRepository.findBySellerIdAndActiveTrue(sellerId = userService.getLoggedInUser().id)
 
     override fun patchSaleStatus(patchSaleStatusRequestVO: PatchSaleStatusRequestVO) {
+        val sale = getExistingSale(patchSaleStatusRequestVO.saleId)
+
+        checkStatusCanBeChanged(patchSaleStatusRequestVO.status, sale.status)
+
         saleRepository.save(
-            getExistingSale(patchSaleStatusRequestVO.saleId)
-                .copy(
-                    status = patchSaleStatusRequestVO.status
-                )
+            sale.copy(
+                status = patchSaleStatusRequestVO.status
+            )
         )
     }
+
     override fun findById(saleId: UUID): Optional<Sale> = saleRepository.findById(saleId)
 
     private fun getSaleItemsForSale(sale: Sale): List<SaleItem> =
@@ -105,5 +111,13 @@ class SaleServiceImpl(
     private fun checkSaleBelongsToLoggedInUser(sale: Sale) {
         if (sale.seller!!.id.toString() != userService.getLoggedInUser().id.toString())
             throw UserUnauthorizedException(userService.getLoggedInUser().id)
+    }
+
+    private fun checkStatusCanBeChanged(newStatus: SaleStatus, actualStatus: SaleStatus) {
+        if (actualStatus == SaleStatus.DELIVERED) {
+            throw BadRequestException("The sale has already been delivered!")
+        } else if (newStatus.ordinal <= actualStatus.ordinal) {
+            throw BadRequestException("New status should be greater than actual status!")
+        }
     }
 }

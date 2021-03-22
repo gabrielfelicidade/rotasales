@@ -26,6 +26,12 @@ class RestExceptionHandler(
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ErrorDetailsVO(e))
     }
 
+    @ExceptionHandler(BadRequestException::class)
+    fun handleBadRequestException(e: BadRequestException, request: WebRequest): ResponseEntity<Any> {
+        logger.error(e.message)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDetailsVO(e))
+    }
+
     @ExceptionHandler(Exception::class)
     fun handleGenericException(e: Exception, request: WebRequest): ResponseEntity<Any> {
         logger.error(e.message)
