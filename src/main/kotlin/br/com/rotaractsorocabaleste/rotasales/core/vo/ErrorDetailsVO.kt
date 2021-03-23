@@ -1,10 +1,11 @@
 package br.com.rotaractsorocabaleste.rotasales.core.vo
 
+import br.com.rotaractsorocabaleste.rotasales.core.exception.GenericException
 import java.time.ZonedDateTime
 
 data class ErrorDetailsVO(
     val time: ZonedDateTime = ZonedDateTime.now(),
-    val error: String?
+    val reason: String
 ) {
-    constructor(e: Exception) : this(error = e.message)
+    constructor(e: GenericException) : this(reason = e.reason)
 }

@@ -43,7 +43,7 @@ class SecurityConfig @Autowired constructor(
     override fun configure(http: HttpSecurity) {
         http.cors().and()
             .csrf().disable().authorizeRequests()
-            .antMatchers(HttpMethod.POST, "/users").hasAnyRole("ROLE_ADMIN", "ROLE_MASTER")
+            .antMatchers(HttpMethod.POST, "/users").hasAnyRole("ADMIN", "MASTER")
             .anyRequest().authenticated()
         http.addFilter(JWTAuthenticationFilter(authenticationManager()))
         http.addFilter(JWTAuthorizationFilter(authenticationManager(), userDetailsService))

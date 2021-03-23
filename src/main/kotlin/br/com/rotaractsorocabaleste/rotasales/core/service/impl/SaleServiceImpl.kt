@@ -5,6 +5,7 @@ import br.com.rotaractsorocabaleste.rotasales.core.entity.SaleItem
 import br.com.rotaractsorocabaleste.rotasales.core.entity.SaleStatus
 import br.com.rotaractsorocabaleste.rotasales.core.exception.BadRequestException
 import br.com.rotaractsorocabaleste.rotasales.core.exception.EntityNotFoundException
+import br.com.rotaractsorocabaleste.rotasales.core.exception.ExceptionEnum
 import br.com.rotaractsorocabaleste.rotasales.core.exception.UserUnauthorizedException
 import br.com.rotaractsorocabaleste.rotasales.core.service.SaleItemService
 import br.com.rotaractsorocabaleste.rotasales.core.service.SaleService
@@ -41,7 +42,9 @@ class SaleServiceImpl(
     }
 
     override fun update(sale: Sale) {
-        getExistingSale(sale.id)
+        checkSaleBelongsToLoggedInUser(
+            getExistingSale(sale.id)
+        )
 
         val oldSaleItems = saleItemService.getSaleItemsBySaleId(sale.id)
         val newSaleItems = getSaleItemsForSale(sale)
@@ -69,7 +72,7 @@ class SaleServiceImpl(
     override fun patchSaleStatus(patchSaleStatusRequestVO: PatchSaleStatusRequestVO) {
         val sale = getExistingSale(patchSaleStatusRequestVO.saleId)
 
-        checkStatusCanBeChanged(patchSaleStatusRequestVO.status, sale.status)
+        checkStatusCanBeChanged(patchSaleStatusRequestVO, sale.status)
 
         saleRepository.save(
             sale.copy(
@@ -113,11 +116,20 @@ class SaleServiceImpl(
             throw UserUnauthorizedException(userService.getLoggedInUser().id)
     }
 
-    private fun checkStatusCanBeChanged(newStatus: SaleStatus, actualStatus: SaleStatus) {
+    private fun checkStatusCanBeChanged(
+        patchSaleStatusRequestVO: PatchSaleStatusRequestVO,
+        actualStatus: SaleStatus
+    ) {
         if (actualStatus == SaleStatus.DELIVERED) {
-            throw BadRequestException("The sale has already been delivered!")
-        } else if (newStatus.ordinal <= actualStatus.ordinal) {
-            throw BadRequestException("New status should be greater than actual status!")
+            throw BadRequestException(
+                ExceptionEnum.BAD_REQUEST_SALE_ALREADY_DELIVERED,
+                patchSaleStatusRequestVO.saleId.toString()
+            )
+        } else if (patchSaleStatusRequestVO.status.ordinal <= actualStatus.ordinal) {
+            throw BadRequestException(
+                ExceptionEnum.BAD_REQUEST_CANNOT_RETURN_STATUS,
+                patchSaleStatusRequestVO.saleId.toString()
+            )
         }
     }
 }

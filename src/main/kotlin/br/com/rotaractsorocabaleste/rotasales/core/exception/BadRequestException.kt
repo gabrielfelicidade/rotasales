@@ -1,5 +1,6 @@
 package br.com.rotaractsorocabaleste.rotasales.core.exception
 
 class BadRequestException(
-    message: String
-) : Exception("Bad request! Error message: $message")
+    error: ExceptionEnum,
+    vararg args: String
+) : GenericException(error.reason, error.message.format(*args))

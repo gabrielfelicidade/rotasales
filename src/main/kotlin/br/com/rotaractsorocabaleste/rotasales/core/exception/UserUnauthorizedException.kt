@@ -4,7 +4,7 @@ import java.util.*
 
 class UserUnauthorizedException(
     userId: UUID?
-) : Exception(
-    "User requested an action be taken on a resource that " +
-            "doesn't have permission. UserId=$userId"
+) : GenericException(
+    ExceptionEnum.FORBIDDEN_USER_UNAUTHORIZED.reason,
+    ExceptionEnum.FORBIDDEN_USER_UNAUTHORIZED.message.format(userId)
 )
