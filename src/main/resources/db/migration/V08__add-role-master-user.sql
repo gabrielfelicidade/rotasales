@@ -1,0 +1,1 @@
+INSERT INTO "user_role" VALUES (uuid_generate_v4(), (SELECT user_id FROM "user" u WHERE u.username = 'master_user'), 'c867bda7-3a72-40d6-b149-81899d950c37');
