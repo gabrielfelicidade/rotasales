@@ -52,6 +52,8 @@ class SaleServiceImpl(
         saleItemService.removeSaleItems(getPendingRemoveSaleItems(oldSaleItems, newSaleItems))
 
         saleItemService.saveSaleItems(newSaleItems)
+
+        saleRepository.save(sale)
     }
 
     override fun delete(saleId: UUID) {
@@ -120,9 +122,9 @@ class SaleServiceImpl(
         patchSaleStatusRequestVO: PatchSaleStatusRequestVO,
         actualStatus: SaleStatus
     ) {
-        if (actualStatus == SaleStatus.DELIVERED) {
+        if (actualStatus == SaleStatus.WITHDRAWN) {
             throw BadRequestException(
-                ExceptionEnum.BAD_REQUEST_SALE_ALREADY_DELIVERED,
+                ExceptionEnum.BAD_REQUEST_SALE_ALREADY_WITHDRAWN,
                 patchSaleStatusRequestVO.saleId.toString()
             )
         } else if (patchSaleStatusRequestVO.status.ordinal <= actualStatus.ordinal) {
