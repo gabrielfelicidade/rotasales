@@ -1,0 +1,1 @@
+ALTER TABLE "sale" ADD COLUMN "donation" boolean NOT NULL DEFAULT false;
