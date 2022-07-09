@@ -10,6 +10,6 @@ public interface ItemRepository extends JpaRepository<Item, UUID> {
 
     Optional<Item> findByIdAndEventId(final UUID id, final UUID eventId);
 
-    Set<Item> findByEventId(final UUID eventId);
+    Set<Item> findByEventIdOrderByNameAsc(final UUID eventId);
 
 }

@@ -25,7 +25,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Set<Item> findItemsByEventId(final UUID eventId) {
-        return itemRepository.findByEventId(eventId);
+        return itemRepository.findByEventIdOrderByNameAsc(eventId);
     }
 
 }
