@@ -1,5 +1,6 @@
 package br.com.rotaractsorocabaleste.rotasales.common.jwt;
 
+import br.com.rotaractsorocabaleste.rotasales.user.UserService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,7 +13,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static br.com.rotaractsorocabaleste.rotasales.common.jwt.SecurityConstants.HEADER_STRING;
 import static br.com.rotaractsorocabaleste.rotasales.common.jwt.SecurityConstants.SECRET;
@@ -20,8 +20,11 @@ import static br.com.rotaractsorocabaleste.rotasales.common.jwt.SecurityConstant
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
-    public JWTAuthorizationFilter(final AuthenticationManager authManager) {
+    private final UserService userService;
+
+    public JWTAuthorizationFilter(final AuthenticationManager authManager, final UserService userService) {
         super(authManager);
+        this.userService = userService;
     }
 
     @Override
@@ -45,13 +48,13 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         final var token = request.getHeader(HEADER_STRING);
 
         if (token != null) {
-            final var user = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
+            final var username = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
                     .build()
                     .verify(token.replace(TOKEN_PREFIX, ""))
                     .getSubject();
 
-            if (user != null) {
-                return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+            if (username != null) {
+                return new UsernamePasswordAuthenticationToken(username, null, userService.findAuthoritiesByUsername(username));
             }
 
             return null;

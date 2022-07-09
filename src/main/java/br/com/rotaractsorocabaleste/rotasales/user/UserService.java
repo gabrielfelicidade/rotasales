@@ -1,5 +1,8 @@
 package br.com.rotaractsorocabaleste.rotasales.user;
 
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Collection;
 import java.util.Optional;
 
 public interface UserService {
@@ -11,4 +14,7 @@ public interface UserService {
     User findLoggedInUser();
 
     void changePassword(final ChangePasswordDTO changePasswordDTO);
+
+    Collection<GrantedAuthority> findAuthoritiesByUsername(final String username);
+
 }

@@ -102,12 +102,12 @@ ALTER TABLE user_role ADD CONSTRAINT FK_USERROLE_ON_USER FOREIGN KEY (user_id) R
 ALTER TABLE "user" ADD CONSTRAINT FK_USER_ON_INSTITUTION FOREIGN KEY (institution_id) REFERENCES institution (id);
 
 DO $$
-DECLARE master_role_id uuid;
+DECLARE admin_role_id uuid;
 DECLARE rotaract_institution_id uuid;
 DECLARE user_id uuid;
 BEGIN
-    INSERT INTO role VALUES (uuid_generate_v4(), now(), now(), 'MASTER') RETURNING id INTO master_role_id;
+    INSERT INTO role VALUES (uuid_generate_v4(), now(), now(), 'ROLE_ADMIN') RETURNING id INTO admin_role_id;
     INSERT INTO institution VALUES (uuid_generate_v4(), now(), now(), 'Rotaract Club Sorocaba-Leste') RETURNING id INTO rotaract_institution_id;
-    INSERT INTO "user" VALUES (uuid_generate_v4(), now(), now(), 'master_user', '$2y$12$LdveL/nBTmBTftYfYExaM.bB5hW0hbp0SPkCxy4uqpH9hOoNZOO8S', 'Administrator', rotaract_institution_id) RETURNING id INTO user_id;
-    INSERT INTO user_role VALUES (uuid_generate_v4(), now(), now(), user_id, master_role_id);
+    INSERT INTO "user" VALUES (uuid_generate_v4(), now(), now(), 'admin', '$2y$12$LdveL/nBTmBTftYfYExaM.bB5hW0hbp0SPkCxy4uqpH9hOoNZOO8S', 'Administrator', rotaract_institution_id) RETURNING id INTO user_id;
+    INSERT INTO user_role VALUES (uuid_generate_v4(), now(), now(), user_id, admin_role_id);
 END $$

@@ -1,10 +1,16 @@
 package br.com.rotaractsorocabaleste.rotasales.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.Optional;
+
+import static java.lang.String.format;
 
 @RequiredArgsConstructor
 @Service
@@ -30,6 +36,17 @@ public class UserServiceImpl implements UserService {
         final var user = findLoggedInUser();
 
         userRepository.save(user.withPassword(changePasswordDTO.getPassword()));
+    }
+
+    @Override
+    @Transactional
+    public Collection<GrantedAuthority> findAuthoritiesByUsername(final String username) {
+        final var user = findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(
+                format("User: %s, not found", username)
+        ));
+
+        return new UserDetailsImpl(user).getRoles();
     }
 
 }

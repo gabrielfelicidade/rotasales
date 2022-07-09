@@ -67,4 +67,8 @@ public class UserDetailsImpl implements UserDetails, Serializable {
         return true;
     }
 
+    public Collection<GrantedAuthority> getRoles() {
+        return authorities;
+    }
+
 }
