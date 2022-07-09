@@ -47,6 +47,7 @@ tasks.named('test') {
 }
 
 jar {
+	enabled = false
 	manifest {
 		attributes(
 				'Class-Path': configurations.runtimeClasspath.files.collect { it.getName() }.join(' '),
