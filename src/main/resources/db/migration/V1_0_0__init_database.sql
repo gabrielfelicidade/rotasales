@@ -111,3 +111,15 @@ BEGIN
     INSERT INTO "user" VALUES (uuid_generate_v4(), now(), now(), 'admin', '$2y$12$LdveL/nBTmBTftYfYExaM.bB5hW0hbp0SPkCxy4uqpH9hOoNZOO8S', 'Administrator', rotaract_institution_id) RETURNING id INTO user_id;
     INSERT INTO user_role VALUES (uuid_generate_v4(), now(), now(), user_id, admin_role_id);
 END $$
+
+CREATE INDEX idx_user_username ON "user"(username);
+
+CREATE INDEX idx_user_role_user ON user_role(user_id);
+
+CREATE INDEX idx_sale_item_sale ON sale_item(sale_id);
+
+CREATE INDEX idx_sale_seller_event_donation_active ON sale(seller_id, event_id, donation, active);
+
+CREATE INDEX idx_item_event ON item(event_id);
+
+CREATE INDEX idx_event_start_sales_end_sales_institution_date ON event(startSales, endSales, institution_id, date);
