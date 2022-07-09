@@ -1,6 +1,5 @@
 package br.com.rotaractsorocabaleste.rotasales.user;
 
-import br.com.rotaractsorocabaleste.rotasales.common.encryption.Encrypted;
 import br.com.rotaractsorocabaleste.rotasales.common.entity.Auditable;
 import br.com.rotaractsorocabaleste.rotasales.institution.Institution;
 import br.com.rotaractsorocabaleste.rotasales.sale.Sale;
@@ -45,7 +44,6 @@ public class User extends Auditable implements Serializable {
     @NotNull
     private String password;
     @NotNull
-    @Encrypted
     private String fullName;
     @NotNull
     @ManyToOne(optional = false)
